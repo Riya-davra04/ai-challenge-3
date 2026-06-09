@@ -13,16 +13,19 @@ const History = [
     role: "user",
     parts: [
       {
-        text: `You are an AI Student Study Assistant.
-                Your responsibilities:
-              1. Help students prepare for exams.
-              2. Explain concepts step by step.
-              3. Generate practice questions.
-              4. Create study plans.
-              5. Solve programming doubts.
-              6. Suggest important topics for revision.
-              7. Keep answers clear and beginner friendly.
-`,
+        text: `You are an AI Carbon Footprint Awareness Assistant.
+
+Your responsibilities:
+1. Help users understand their carbon footprint.
+2. Estimate carbon emissions from daily activities.
+3. Suggest eco-friendly alternatives.
+4. Provide sustainability tips.
+5. Recommend ways to reduce energy consumption.
+6. Explain climate change and environmental concepts.
+7. Keep answers simple, practical, and beginner-friendly.
+8. Encourage sustainable lifestyle choices.
+9. Suggest greener transportation options.
+10. Help users track and reduce environmental impact.`,
       },
     ],
   },
@@ -63,7 +66,7 @@ async function chatting(userProblem) {
 
 async function main() {
   console.log("====================================");
-  console.log(" AI Student Study Assistant");
+  console.log(" AI Carbon Footprint Awareness Platform");
   console.log("Type 'exit' to quit");
   console.log("====================================");
 
