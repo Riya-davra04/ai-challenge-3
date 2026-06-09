@@ -1,4 +1,4 @@
-# AI Carbon Footprint Awareness Platform
+# 🌱 AI Carbon Footprint Awareness Platform
 
 ## 📌 Project Overview
 
@@ -21,6 +21,8 @@ Sustainability & Environment Awareness
 * 📖 Explains environmental concepts in simple language
 * 🌙 Dark/Light mode toggle
 * 📋 Copy response feature
+* ⚡ Fast response with caching
+* 🔁 Retry mechanism for API reliability
 
 ---
 
@@ -33,9 +35,9 @@ The system uses Google's Gemini AI model to:
 3. Generate structured responses:
 
    * Carbon footprint calculation
-   * Alternatives
-   * Tips
-   * Explanations
+   * Eco-friendly alternatives
+   * Sustainability tips
+   * Environmental explanations
 
 ---
 
@@ -43,7 +45,7 @@ The system uses Google's Gemini AI model to:
 
 * Frontend: HTML, CSS, JavaScript
 * Backend: Node.js, Express
-* AI Model: Google Gemini (gemini-3-flash-preview)
+* AI Model: Google Gemini (`gemini-3-flash-preview`)
 * Deployment: Render
 
 ---
@@ -52,8 +54,8 @@ The system uses Google's Gemini AI model to:
 
 1. User enters a question in the chat interface
 2. Request is sent to backend (`/ask` API)
-3. Backend calls Gemini AI
-4. AI generates response
+3. Backend processes input with validation and caching
+4. Gemini AI generates response
 5. Response is displayed in chat UI
 
 ---
@@ -61,38 +63,46 @@ The system uses Google's Gemini AI model to:
 ## 📌 Assumptions
 
 * Average fuel efficiency and emission values are used
-* Responses are AI-generated and may vary
+* AI responses are approximate and may vary
 * Internet connection is required
 
 ---
 
-## 🔒 Security Considerations
+## 🔒 Security
 
-* API key stored in `.env`
-* No sensitive user data stored
+* API key stored securely in `.env`
+* Input validation implemented
+* Security headers added to prevent attacks
 
 ---
 
 ## ⚡ Efficiency
 
-* Lightweight frontend
-* Fast API responses using Gemini Flash model
-* Retry logic for API failures
+* Response caching implemented (improves speed)
+* Cache size controlled to avoid memory issues
+* Lightweight frontend for faster load
 
 ---
 
 ## 🧪 Testing
 
-* Tested with multiple user queries
-* Handled edge cases (empty input, API errors)
+Run the following command:
+
+npm test
+
+This will:
+
+* Check server health endpoint (`/health`)
+* Test AI response generation (`/ask`)
 
 ---
 
 ## ♿ Accessibility
 
-* Simple and clean UI
-* Readable fonts
-* Easy interaction (keyboard + click)
+* Responsive design (mobile-friendly)
+* ARIA labels for better usability
+* Keyboard support (Enter key)
+* Readable fonts and proper contrast
 
 ---
 
@@ -105,4 +115,12 @@ The system uses Google's Gemini AI model to:
 
 ## 🙌 Conclusion
 
-This project demonstrates a practical AI solution for raising awareness about carbon footprint and encouraging sustainable lifestyle choices.
+This project demonstrates a practical AI solution for raising awareness about carbon footprint and promoting sustainable lifestyle choices using modern web technologies and AI.
+
+---
+
+## 🚀 Future Improvements
+
+* Voice input support 🎤
+* Multi-language support 🌍
+* User history tracking 📊

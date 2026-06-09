@@ -3,6 +3,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI Carbon Footprint Assistant">
+<meta name="theme-color" content="#0f172a">
 <title>AI Carbon Assistant</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
@@ -134,12 +137,16 @@ button {
 <div class="chat-container" id="chat"></div>
 
 <div class="input-area">
-  <input type="text" id="question" placeholder="Ask something..." onkeypress="handleKey(event)">
-  <button onclick="ask()">Send</button>
+  <input type="text" id="question" placeholder="Ask something..." aria-label="Enter your question" onkeypress="handleKey(event)" required >
+  <button onclick="ask()" aria-label="Send message">Send</button>
 </div>
 
 <script>
 const chat = document.getElementById("chat");
+
+window.onload = () => {
+  addMessage("👋 Ask me about your carbon footprint!", "bot");
+};
 
 function addMessage(text, type) {
   const div = document.createElement("div");
@@ -147,12 +154,12 @@ function addMessage(text, type) {
 
   if (type === "bot") {
     const copy = document.createElement("span");
-    copy.innerText = "©️";
+    copy.innerText = "📋";
     copy.className = "copy-btn";
     copy.onclick = () => {
       navigator.clipboard.writeText(text);
       copy.innerText = "✅";
-      setTimeout(() => copy.innerText = "©️", 1000);
+      setTimeout(() => copy.innerText = "📋", 1000);
     };
     div.appendChild(copy);
   }
@@ -181,7 +188,7 @@ async function ask() {
 
   const typing = document.createElement("div");
   typing.className = "message bot typing";
-  typing.innerText = "AI is typing...";
+  typing.innerText = "⏳ Generating smart answer...";
   chat.appendChild(typing);
 
   const res = await fetch("/ask", {
@@ -191,6 +198,12 @@ async function ask() {
     },
     body: JSON.stringify({ q })
   });
+
+  if (!res.ok) {
+  chat.removeChild(typing);
+  addMessage("Server error. Please try again.", "bot");
+  return;
+}
 
   const data = await res.text();
 
