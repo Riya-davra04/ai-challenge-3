@@ -7,11 +7,13 @@
   "type": "module",
   "main": "LLM.js",
   "scripts": {
+     "start": "node LLM.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@google/genai": "^2.8.0",
     "dotenv": "^17.4.2",
+    "express": "^5.2.1",
     "readline-sync": "^1.4.10"
   },
   "keywords": []

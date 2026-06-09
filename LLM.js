@@ -1,79 +1,53 @@
+import express from "express";
 import { GoogleGenAI } from "@google/genai";
-import readlineSync from "readline-sync";
 import dotenv from "dotenv";
 
 dotenv.config();
+
+const app = express();
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
-const History = [
-  {
-    role: "user",
-    parts: [
-      {
-        text: `You are an AI Carbon Footprint Awareness Assistant.
+app.get("/", (req, res) => {
+  res.send("AI Carbon Footprint Awareness Platform is running!");
+});
 
-Your responsibilities:
-1. Help users understand their carbon footprint.
-2. Estimate carbon emissions from daily activities.
-3. Suggest eco-friendly alternatives.
-4. Provide sustainability tips.
-5. Recommend ways to reduce energy consumption.
-6. Explain climate change and environmental concepts.
-7. Keep answers simple, practical, and beginner-friendly.
-8. Encourage sustainable lifestyle choices.
-9. Suggest greener transportation options.
-10. Help users track and reduce environmental impact.`,
-      },
-    ],
-  },
-];
-
-async function chatting(userProblem) {
-  if (
-    userProblem.toLowerCase() === "exit" ||
-    userProblem.toLowerCase() === "quit"
-  ) {
-    console.log("Goodbye!");
-    process.exit(0);
-  }
-
-  History.push({
-    role: "user",
-    parts: [{ text: userProblem }],
-  });
-
+app.get("/ask", async (req, res) => {
   try {
+    const question = req.query.q || "How can I reduce my carbon footprint?";
+
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: History,
+      model: "gemini-2.5-flash",
+      contents: `
+You are an AI Carbon Footprint Awareness Assistant.
+
+Responsibilities:
+- Estimate carbon footprint
+- Suggest eco-friendly alternatives
+- Provide sustainability tips
+- Explain environmental concepts
+
+User Question:
+${question}
+`,
     });
 
-    History.push({
-      role: "model",
-      parts: [{ text: response.text }],
-    });
+    res.send(`
+      <h2>Question:</h2>
+      <p>${question}</p>
 
-    console.log("\n Study Assistant:\n");
-    console.log(response.text);
-    console.log("\n");
+      <h2>Answer:</h2>
+      <pre>${response.text}</pre>
+    `);
   } catch (error) {
-    console.log("Error:", error.message);
+    res.send(`Error: ${error.message}`);
   }
-}
+});
 
-async function main() {
-  console.log("====================================");
-  console.log(" AI Carbon Footprint Awareness Platform");
-  console.log("Type 'exit' to quit");
-  console.log("====================================");
+const PORT = process.env.PORT || 3000;
 
-  while (true) {
-    const userProblem = readlineSync.question("\n You: ");
-    await chatting(userProblem);
-  }
-}
-
-main();
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+}); 
