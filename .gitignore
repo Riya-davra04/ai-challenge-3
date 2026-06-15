@@ -1,2 +1,13 @@
 node_modules/
 .env
+error.log
+combined.log
+*.log
+.DS_Store
+dist/
+build/
+coverage/
+.vscode/
+*.swp
+*.swo
+*~

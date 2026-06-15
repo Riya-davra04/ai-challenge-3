@@ -1,224 +1,1735 @@
-<!DOCTYPE html>
-
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="AI Carbon Footprint Assistant">
+<meta name="description" content="AI Carbon Footprint Assistant - Track and reduce your environmental impact">
 <meta name="theme-color" content="#0f172a">
-<title>AI Carbon Assistant</title>
+<meta name="author" content="Carbon Assistant">
+<title>AI Carbon Assistant | Track Your Carbon Footprint</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: #0f172a;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  transition: 0.3s;
-}
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-.light-mode {
-  background: #f1f5f9;
-  color: black;
-}
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #0f172a;
+    color: #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
 
-.header {
-  padding: 15px;
-  background: #020617;
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-  position: relative;
-}
+  /* Light mode styles */
+  body.light-mode {
+    background: #f1f5f9;
+    color: #0f172a;
+  }
 
-.toggle-btn {
-  position: absolute;
-  right: 15px;
-  top: 10px;
-  cursor: pointer;
-}
+  body.light-mode .header {
+    background: #e2e8f0;
+    color: #0f172a;
+    border-bottom: 2px solid #cbd5e1;
+  }
 
-.light-mode .header {
-  background: #e2e8f0;
-}
+  body.light-mode .chat-container {
+    background: #f8fafc;
+  }
 
-.chat-container {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-}
+  body.light-mode .message.bot {
+    background: #ffffff;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+  }
 
-.message {
-  max-width: 70%;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 10px;
-  line-height: 1.5;
-  position: relative;
-}
+  body.light-mode .message.user {
+    background: #3b82f6;
+    color: white;
+  }
 
-.user {
-  background: #2563eb;
-  margin-left: auto;
-  color: white;
-}
+  body.light-mode .input-area {
+    background: #ffffff;
+    border-top: 2px solid #e2e8f0;
+  }
 
-.bot {
-  background: #1e293b;
-  margin-right: auto;
-}
+  body.light-mode input {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+  }
 
-.light-mode .bot {
-  background: #e2e8f0;
-  color: black;
-}
+  body.light-mode .typing {
+    color: #64748b;
+  }
 
-.copy-btn {
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  font-size: 12px;
-  cursor: pointer;
-  opacity: 0.7;
-}
+  body.light-mode .footer {
+    color: #64748b;
+  }
 
-.copy-btn:hover {
-  opacity: 1;
-}
+  /* Header styles */
+  .header {
+    padding: 20px;
+    background: #020617;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    position: relative;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
 
-.input-area {
-  display: flex;
-  padding: 10px;
-  background: #020617;
-}
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-.light-mode .input-area {
-  background: #e2e8f0;
-}
+  .header-controls {
+    display: flex;
+    gap: 10px;
+  }
 
-input {
-  flex: 1;
-  padding: 12px;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-}
+  /* Button styles with tooltips */
+  .icon-btn {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    color: inherit;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
 
-button {
-  margin-left: 10px;
-  padding: 12px 20px;
-  background: #22c55e;
-  border: none;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
-}
+  /* Tooltip on hover */
+  .icon-btn::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background: #22c55e;
+    color: white;
+    font-size: 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    margin-bottom: 8px;
+    z-index: 1000;
+    font-weight: 500;
+  }
 
-.typing {
-  font-size: 14px;
-  opacity: 0.7;
-}
+  .icon-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #22c55e transparent transparent transparent;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    margin-bottom: 3px;
+  }
+
+  .icon-btn:hover::before,
+  .icon-btn:hover::after {
+    opacity: 1;
+  }
+
+  .icon-btn:hover {
+    background: rgba(255,255,255,0.2);
+    transform: scale(1.05);
+  }
+
+  body.light-mode .icon-btn {
+    background: rgba(0,0,0,0.05);
+  }
+
+  body.light-mode .icon-btn:hover {
+    background: rgba(0,0,0,0.1);
+  }
+
+  /* Copy button tooltip */
+  .copy-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.1);
+    position: relative;
+  }
+
+  .copy-btn::before {
+    content: "Copy to clipboard";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    background: #22c55e;
+    color: white;
+    font-size: 11px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    margin-bottom: 5px;
+    z-index: 1000;
+  }
+
+  .copy-btn:hover::before {
+    opacity: 1;
+  }
+
+  .copy-btn:hover {
+    opacity: 1;
+    background: rgba(0,0,0,0.2);
+  }
+
+  /* Suggestion chips tooltip */
+  .suggestion-chip {
+    padding: 6px 12px;
+    background: rgba(34,197,94,0.2);
+    border: 1px solid #22c55e;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .suggestion-chip::before {
+    content: "Click to use this question";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    background: #22c55e;
+    color: white;
+    font-size: 11px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    margin-bottom: 5px;
+    z-index: 1000;
+  }
+
+  .suggestion-chip:hover::before {
+    opacity: 1;
+  }
+
+  .suggestion-chip:hover {
+    background: #22c55e;
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  body.light-mode .suggestion-chip {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  body.light-mode .suggestion-chip:hover {
+    background: #22c55e;
+    color: white;
+  }
+
+  /* Submit button tooltip */
+  #submitBtn {
+    position: relative;
+  }
+
+  #submitBtn::before {
+    content: "Send your question to AI";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background: #22c55e;
+    color: white;
+    font-size: 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    margin-bottom: 8px;
+    z-index: 1000;
+  }
+
+  #submitBtn:hover::before {
+    opacity: 1;
+  }
+
+  /* Input field tooltip */
+  #question {
+    position: relative;
+  }
+
+  /* Chat container */
+  .chat-container {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #0f172a;
+    transition: background 0.3s ease;
+  }
+
+  /* Message styles */
+  .message {
+    max-width: 80%;
+    padding: 14px 18px;
+    border-radius: 18px;
+    line-height: 1.6;
+    font-size: 14px;
+    animation: fadeIn 0.3s ease-in;
+    position: relative;
+    word-wrap: break-word;
+  }
+
+  @keyframes fadeIn {
+    from { 
+      opacity: 0; 
+      transform: translateY(10px); 
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+  }
+
+  .message.user {
+    background: #3b82f6;
+    margin-left: auto;
+    color: white;
+    border-bottom-right-radius: 4px;
+  }
+
+  .message.bot {
+    background: #1e293b;
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+  }
+
+  /* Typing indicator */
+  .typing {
+    font-size: 14px;
+    opacity: 0.8;
+    font-style: italic;
+  }
+
+  /* Input area */
+  .input-area {
+    padding: 20px;
+    background: #020617;
+    border-top: 1px solid #1e293b;
+    transition: background 0.3s ease;
+  }
+
+  .input-group {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  .input-wrapper {
+    flex: 1;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    font-family: inherit;
+    background: #1e293b;
+    color: white;
+    transition: all 0.2s;
+  }
+
+  input:focus {
+    outline: 2px solid #22c55e;
+    outline-offset: 2px;
+  }
+
+  button {
+    padding: 12px 24px;
+    background: #22c55e;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  button:hover:not(:disabled) {
+    background: #16a34a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34,197,94,0.3);
+  }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Quick suggestions */
+  .suggestions {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    padding: 8px;
+    background: inherit;
+    color: #94a3b8;
+  }
+
+  /* Scrollbar styling */
+  .chat-container::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .chat-container::-webkit-scrollbar-track {
+    background: #1e293b;
+  }
+
+  .chat-container::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+  }
+
+  body.light-mode .chat-container::-webkit-scrollbar-track {
+    background: #e2e8f0;
+  }
+
+  body.light-mode .chat-container::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+  }
+
+  /* Screen reader only */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .message {
+      max-width: 90%;
+    }
+    
+    .header {
+      padding: 15px;
+      font-size: 18px;
+    }
+    
+    .input-group {
+      flex-direction: column;
+    }
+    
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .suggestions {
+      justify-content: center;
+    }
+    
+    .icon-btn::before {
+      font-size: 10px;
+      white-space: nowrap;
+    }
+  }
+
+  /* Error message */
+  .error-message {
+    background: #dc2626;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 10px 0;
+    text-align: center;
+  }
+
+  /* Success animation */
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .success {
+    animation: pulse 0.3s ease;
+  }
+
+  /* Toast notification */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #22c55e;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    z-index: 1000;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
 </style>
-
 </head>
 
 <body>
 
 <div class="header">
-  🤖 AI Carbon Assistant
-  <span class="toggle-btn" onclick="toggleMode()">🌙</span>
+  <div class="header-title">
+    <span>🌍</span>
+    <span>AI Carbon Assistant</span>
+  </div>
+  <div class="header-controls">
+    <button class="icon-btn" id="deleteChatBtn" onclick="clearChat()" aria-label="Clear chat history" data-tooltip="🗑️ Delete all messages - Clear entire conversation">
+      🗑️ Delete
+    </button>
+    <button class="icon-btn" id="modeToggleBtn" onclick="toggleMode()" aria-label="Toggle dark/light mode" data-tooltip="🌙 Switch to Light/Dark mode">
+      🌙 Dark
+    </button>
+    <button class="icon-btn" id="exportChatBtn" onclick="exportChat()" aria-label="Export chat as text" data-tooltip="📥 Download chat - Save conversation as .txt file">
+      📥 Export
+    </button>
+  </div>
 </div>
 
-<div class="chat-container" id="chat"></div>
+<div class="chat-container" id="chat" role="log" aria-live="polite" aria-label="Chat messages area">
+   Messages will appear here 
+</div>
 
 <div class="input-area">
-  <input type="text" id="question" placeholder="Ask something..." aria-label="Enter your question" onkeypress="handleKey(event)" required >
-  <button onclick="ask()" aria-label="Send message">Send</button>
+  <div class="input-group">
+    <div class="input-wrapper">
+      <label for="question" id="question-label">💬 Ask about carbon footprint:</label>
+      <input 
+        type="text" 
+        id="question" 
+        aria-labelledby="question-label"
+        aria-required="true"
+        placeholder="e.g., How much CO2 does a car produce per km?"
+        autocomplete="off"
+        onkeypress="handleKeyPress(event)"
+        title="Type your question here and press Enter or click Ask AI"
+      >
+    </div>
+    <button onclick="askQuestion()" id="submitBtn" aria-label="Submit question to AI assistant" title="Send question to AI">
+      <span>🚀</span>
+      <span>Ask AI</span>
+    </button>
+  </div>
+  
+  <div class="suggestions" id="suggestions">
+    <div class="suggestion-chip" onclick="useSuggestion('I drive 30 km daily. What\'s my carbon footprint?')" title="Click to use this question">
+      🚗 Daily commute
+    </div>
+    <div class="suggestion-chip" onclick="useSuggestion('Compare electric vs petrol car emissions')" title="Click to use this question">
+      ⚡ Car comparison
+    </div>
+    <div class="suggestion-chip" onclick="useSuggestion('How to reduce home energy consumption?')" title="Click to use this question">
+      🏠 Home energy
+    </div>
+    <div class="suggestion-chip" onclick="useSuggestion('Best diet for low carbon footprint')" title="Click to use this question">
+      🥗 Low-carbon diet
+    </div>
+    <div class="suggestion-chip" onclick="useSuggestion('Tips for eco-friendly travel')" title="Click to use this question">
+      ✈️ Green travel
+    </div>
+  </div>
 </div>
 
+<div class="footer">
+  🌱 Powered by Gemini AI | Real-time carbon calculations | Your personal sustainability assistant
+</div>
+
+
+<div id="sr-announcer" class="sr-only" aria-live="polite"></div>
+
 <script>
-const chat = document.getElementById("chat");
+  // DOM elements
+  const chatContainer = document.getElementById("chat");
+  const questionInput = document.getElementById("question");
+  const submitBtn = document.getElementById("submitBtn");
+  const srAnnouncer = document.getElementById("sr-announcer");
+  const deleteChatBtn = document.getElementById("deleteChatBtn");
+  const modeToggleBtn = document.getElementById("modeToggleBtn");
+  const exportChatBtn = document.getElementById("exportChatBtn");
 
-window.onload = () => {
-  addMessage("👋 Ask me about your carbon footprint!", "bot");
-};
+  // App state
+  let isProcessing = false;
+  let messageCount = 0;
 
-function addMessage(text, type) {
-  const div = document.createElement("div");
-  div.className = "message " + type;
-
-  if (type === "bot") {
-    const copy = document.createElement("span");
-    copy.innerText = "📋";
-    copy.className = "copy-btn";
-    copy.onclick = () => {
-      navigator.clipboard.writeText(text);
-      copy.innerText = "✅";
-      setTimeout(() => copy.innerText = "📋", 1000);
-    };
-    div.appendChild(copy);
+  // Load saved theme preference
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "light") {
+    document.body.classList.add("light-mode");
+    if (modeToggleBtn) modeToggleBtn.innerHTML = "☀️ Light";
+    if (modeToggleBtn) modeToggleBtn.setAttribute("data-tooltip", "☀️ Switch to Dark mode");
+  } else {
+    if (modeToggleBtn) modeToggleBtn.innerHTML = "🌙 Dark";
+    if (modeToggleBtn) modeToggleBtn.setAttribute("data-tooltip", "🌙 Switch to Light mode");
   }
 
-  const content = document.createElement("div");
-  content.innerText = text;
-
-  div.appendChild(content);
-  chat.appendChild(div);
-
-  chat.scrollTop = chat.scrollHeight;
-}
-
-function handleKey(e) {
-  if (e.key === "Enter") ask();
-}
-
-async function ask() {
-  const input = document.getElementById("question");
-  const q = input.value;
-
-  if (!q) return;
-
-  addMessage(q, "user");
-  input.value = "";
-
-  const typing = document.createElement("div");
-  typing.className = "message bot typing";
-  typing.innerText = "⏳ Generating smart answer...";
-  chat.appendChild(typing);
-
-  const res = await fetch("/ask", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ q })
+  // Welcome message on load
+  window.addEventListener("DOMContentLoaded", () => {
+    addWelcomeMessage();
+    questionInput.focus();
   });
 
-  if (!res.ok) {
-  chat.removeChild(typing);
-  addMessage("Server error. Please try again.", "bot");
-  return;
-}
+  function showToast(message, isError = false) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.style.background = isError ? "#dc2626" : "#22c55e";
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
 
-  const data = await res.text();
+  function addWelcomeMessage() {
+    const welcomeText = `👋 **Welcome to AI Carbon Assistant!**
 
-  chat.removeChild(typing);
+I can help you with:
+• 📊 Calculate carbon footprint
+• 🌱 Find eco-friendly alternatives
+• 💡 Get sustainability tips
+• 📚 Learn environmental concepts
 
-  // Remove HTML tags
-  const cleanText = data.replace(/<[^>]*>?/gm, '');
+**Try asking:**
+• "What's the carbon footprint of a 10km car ride?"
+• "How can I reduce plastic waste?"
+• "Compare biking vs driving"
+• "Best energy-efficient appliances"
 
-  addMessage(cleanText, "bot");
-}
+Let's make Earth greener together! 🌍`;
+    
+    addMessage(welcomeText, "bot");
+  }
 
-function toggleMode() {
-  document.body.classList.toggle("light-mode");
-}
+  function announceToScreenReader(message) {
+    if (srAnnouncer) {
+      srAnnouncer.textContent = message;
+      setTimeout(() => {
+        srAnnouncer.textContent = "";
+      }, 3000);
+    }
+  }
+
+  function addMessage(text, type) {
+    const messageDiv = document.createElement("div");
+    messageDiv.className = `message ${type}`;
+    messageDiv.setAttribute("role", "article");
+    messageDiv.setAttribute("aria-label", `${type === "user" ? "Your question" : "AI response"}`);
+    
+    // Add timestamp
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    if (type === "bot") {
+      // Add copy button for bot messages
+      const copyBtn = document.createElement("span");
+      copyBtn.className = "copy-btn";
+      copyBtn.textContent = "📋 Copy";
+      copyBtn.setAttribute("role", "button");
+      copyBtn.setAttribute("aria-label", "Copy response to clipboard");
+      copyBtn.setAttribute("title", "Copy this response to clipboard");
+      copyBtn.style.cursor = "pointer";
+      copyBtn.onclick = (e) => {
+        e.stopPropagation();
+        copyToClipboard(text);
+        copyBtn.textContent = "✅ Copied!";
+        setTimeout(() => copyBtn.textContent = "📋 Copy", 2000);
+      };
+      messageDiv.appendChild(copyBtn);
+      
+      // Format message with markdown-like styling
+      const content = document.createElement("div");
+      content.style.whiteSpace = "pre-wrap";
+      content.style.wordWrap = "break-word";
+      content.style.paddingRight = "60px";
+      content.innerHTML = formatMessage(text);
+      messageDiv.appendChild(content);
+      
+      // Add timestamp for bot messages
+      const timeSpan = document.createElement("div");
+      timeSpan.style.fontSize = "10px";
+      timeSpan.style.opacity = "0.6";
+      timeSpan.style.marginTop = "8px";
+      timeSpan.textContent = timestamp;
+      messageDiv.appendChild(timeSpan);
+    } else {
+      // User message
+      const content = document.createElement("div");
+      content.style.whiteSpace = "pre-wrap";
+      content.textContent = text;
+      messageDiv.appendChild(content);
+      
+      const timeSpan = document.createElement("div");
+      timeSpan.style.fontSize = "10px";
+      timeSpan.style.opacity = "0.6";
+      timeSpan.style.marginTop = "8px";
+      timeSpan.style.textAlign = "right";
+      timeSpan.textContent = timestamp;
+      messageDiv.appendChild(timeSpan);
+    }
+    
+    chatContainer.appendChild(messageDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    messageCount++;
+    
+    // Announce to screen readers
+    if (type === "bot") {
+      announceToScreenReader("AI response received");
+    }
+  }
+
+  function formatMessage(text) {
+    // Simple markdown-like formatting
+    let formatted = text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/^• /gm, '&nbsp;&nbsp;• ')
+      .replace(/\n/g, '<br>');
+    
+    // Add emoji spacing
+    formatted = formatted.replace(/([📊🌱💡📚])/g, '<span style="font-size: 1.2em;">$1</span>');
+    
+    return formatted;
+  }
+
+  function addTypingIndicator() {
+    const typingDiv = document.createElement("div");
+    typingDiv.className = "message bot typing";
+    typingDiv.id = "typing-indicator";
+    typingDiv.setAttribute("role", "status");
+    typingDiv.setAttribute("aria-label", "AI is thinking");
+    typingDiv.innerHTML = "🤖 <span style='opacity:0.7'>Thinking</span><span style='animation: pulse 1s infinite'>...</span>";
+    chatContainer.appendChild(typingDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+
+  function removeTypingIndicator() {
+    const indicator = document.getElementById("typing-indicator");
+    if (indicator) {
+      indicator.remove();
+    }
+  }
+
+  async function copyToClipboard(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast("✅ Copied to clipboard!");
+      announceToScreenReader("Copied to clipboard");
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      showToast("❌ Failed to copy", true);
+      announceToScreenReader("Failed to copy");
+    }
+  }
+
+  function handleKeyPress(event) {
+    if (event.key === "Enter" && !event.shiftKey && !isProcessing) {
+      event.preventDefault();
+      askQuestion();
+    }
+  }
+
+  function useSuggestion(suggestion) {
+    questionInput.value = suggestion;
+    questionInput.focus();
+    announceToScreenReader(`Suggestion selected: ${suggestion}`);
+    showToast("✨ Suggestion added to input box");
+  }
+
+  async function askQuestion() {
+    const question = questionInput.value.trim();
+    
+    if (!question) {
+      showToast("⚠️ Please enter a question", true);
+      announceToScreenReader("Please enter a question");
+      return;
+    }
+    
+    if (question.length > 500) {
+      showToast("⚠️ Question too long. Maximum 500 characters.", true);
+      announceToScreenReader("Question too long");
+      return;
+    }
+    
+    if (isProcessing) {
+      showToast("⏳ Please wait, I'm still processing", true);
+      return;
+    }
+    
+    // Add user message to chat
+    addMessage(question, "user");
+    
+    // Clear input
+    questionInput.value = "";
+    questionInput.focus();
+    
+    // Show typing indicator
+    addTypingIndicator();
+    isProcessing = true;
+    submitBtn.disabled = true;
+    
+    try {
+      const response = await fetch("/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "text/plain"
+        },
+        body: JSON.stringify({ q: question })
+      });
+      
+      removeTypingIndicator();
+      
+      if (!response.ok) {
+        let errorMessage = "Server error. Please try again.";
+        
+        if (response.status === 429) {
+          errorMessage = "Too many requests. Please wait a moment.";
+        } else if (response.status === 400) {
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || "Invalid question format.";
+          } catch {
+            errorMessage = "Invalid question format.";
+          }
+        } else if (response.status === 500) {
+          errorMessage = "AI service is busy. Please try again.";
+        }
+        
+        throw new Error(errorMessage);
+      }
+      
+      const data = await response.text();
+      
+      if (!data || data.length < 10) {
+        throw new Error("Received empty response from server");
+      }
+      
+      addMessage(data, "bot");
+      announceToScreenReader("Response received");
+      showToast("✅ Response received!");
+      
+    } catch (error) {
+      console.error("Error:", error);
+      removeTypingIndicator();
+      addMessage(`⚠️ ${error.message}`, "bot");
+      announceToScreenReader(`Error: ${error.message}`);
+      showToast(error.message, true);
+    } finally {
+      isProcessing = false;
+      submitBtn.disabled = false;
+    }
+  }
+
+  function clearChat() {
+    if (confirm("🗑️ Delete all messages?\n\nThis will clear the entire conversation and cannot be undone.")) {
+      chatContainer.innerHTML = "";
+      messageCount = 0;
+      addWelcomeMessage();
+      announceToScreenReader("Chat cleared");
+      showToast("🗑️ Chat cleared successfully!");
+    }
+  }
+
+  async function exportChat() {
+    const messages = Array.from(chatContainer.querySelectorAll(".message"));
+    
+    if (messages.length === 0) {
+      showToast("⚠️ No messages to export", true);
+      return;
+    }
+    
+    const exportText = messages.map(msg => {
+      const type = msg.classList.contains("user") ? "You" : "AI";
+      const content = msg.querySelector("div")?.textContent || "";
+      const timestamp = msg.querySelector("div:last-child")?.textContent || "";
+      return `[${timestamp}] ${type}: ${content}`;
+    }).join("\n\n");
+    
+    const blob = new Blob([`🌍 AI Carbon Assistant Chat Export\n📅 Date: ${new Date().toLocaleString()}\n📊 Total Messages: ${messages.length}\n\n${exportText}`], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `carbon-chat-${Date.now()}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    announceToScreenReader("Chat exported");
+    showToast("📥 Chat exported successfully!");
+  }
+
+  function toggleMode() {
+    const body = document.body;
+    const modeToggle = document.getElementById("modeToggleBtn");
+    
+    body.classList.toggle("light-mode");
+    
+    if (body.classList.contains("light-mode")) {
+      modeToggle.innerHTML = "☀️ Light";
+      modeToggle.setAttribute("data-tooltip", "☀️ Switch to Dark mode");
+      localStorage.setItem("theme", "light");
+      announceToScreenReader("Light mode enabled");
+      showToast("☀️ Light mode enabled");
+    } else {
+      modeToggle.innerHTML = "🌙 Dark";
+      modeToggle.setAttribute("data-tooltip", "🌙 Switch to Light mode");
+      localStorage.setItem("theme", "dark");
+      announceToScreenReader("Dark mode enabled");
+      showToast("🌙 Dark mode enabled");
+    }
+  }
+
+  // Focus management
+  questionInput.addEventListener("focus", () => {
+    questionInput.setAttribute("aria-label", "Type your question about carbon footprint");
+  });
+
+  // Auto-resize input on mobile
+  if (window.innerWidth <= 768) {
+    questionInput.addEventListener("input", function() {
+      this.style.height = "auto";
+      this.style.height = Math.min(this.scrollHeight, 100) + "px";
+    });
+  }
+
+  // Button click animations
+  const buttons = document.querySelectorAll(".icon-btn, button, .suggestion-chip, .copy-btn");
+  buttons.forEach(btn => {
+    btn.addEventListener("click", function() {
+      this.style.transform = "scale(0.95)";
+      setTimeout(() => {
+        this.style.transform = "";
+      }, 200);
+    });
+  });
 </script>
 
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="AI Carbon Footprint Assistant - Track, understand, and reduce your environmental impact with real-time AI-powered insights">
+<meta name="theme-color" content="#0f172a">
+<meta name="author" content="AI Carbon Assistant">
+<meta name="keywords" content="carbon footprint, AI assistant, sustainability, environment, eco-friendly">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="AI Carbon Assistant">
+<meta property="og:description" content="Track and reduce your carbon footprint with AI">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<title>AI Carbon Assistant | Reduce Your Carbon Footprint</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg-dark: #0f172a;
+    --bg-light: #f1f5f9;
+    --text-dark: #f1f5f9;
+    --text-light: #0f172a;
+    --primary: #22c55e;
+    --primary-dark: #16a34a;
+    --secondary: #3b82f6;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --border-radius: 16px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-dark);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    transition: var(--transition);
+  }
+
+  body.light-mode {
+    background: var(--bg-light);
+    color: var(--text-light);
+  }
+
+  /* Header */
+  .header {
+    padding: 20px 24px;
+    background: rgba(2, 6, 23, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  body.light-mode .header {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .logo-icon {
+    font-size: 32px;
+    animation: spin 10s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .header-controls {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn-icon {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: var(--transition);
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  body.light-mode .btn-icon {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .btn-icon:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  /* Chat Container */
+  .chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Messages */
+  .message {
+    max-width: 80%;
+    padding: 16px 20px;
+    border-radius: 20px;
+    animation: slideIn 0.3s ease;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .message.user {
+    background: var(--secondary);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+  }
+
+  .message.bot {
+    background: rgba(255, 255, 255, 0.1);
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+  }
+
+  body.light-mode .message.bot {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Copy button */
+  .copy-btn {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: var(--transition);
+    opacity: 0;
+  }
+
+  .message:hover .copy-btn {
+    opacity: 1;
+  }
+
+  .copy-btn:hover {
+    background: var(--primary);
+    color: white;
+  }
+
+  /* Typing indicator */
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    width: fit-content;
+  }
+
+  .typing-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--primary);
+    border-radius: 50%;
+    animation: bounce 1.4s infinite;
+  }
+
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-10px); }
+  }
+
+  /* Input Area */
+  .input-area {
+    padding: 20px 24px;
+    background: rgba(2, 6, 23, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  body.light-mode .input-area {
+    background: rgba(255, 255, 255, 0.95);
+    border-top-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .input-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+  }
+
+  .input-group {
+    flex: 1;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.8;
+  }
+
+  input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: inherit;
+    font-family: inherit;
+    font-size: 14px;
+    transition: var(--transition);
+  }
+
+  body.light-mode input {
+    background: white;
+    border-color: #e2e8f0;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+  }
+
+  button {
+    padding: 14px 28px;
+    background: var(--primary);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  button:hover:not(:disabled) {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Suggestions */
+  .suggestions {
+    max-width: 1200px;
+    margin: 16px auto 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .suggestion-chip {
+    padding: 8px 16px;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid var(--primary);
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .suggestion-chip:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 12px;
+    font-size: 11px;
+    opacity: 0.7;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    z-index: 1000;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
+  /* Scrollbar */
+  .chat-container::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .chat-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  .chat-container::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .message {
+      max-width: 90%;
+    }
+    
+    .input-wrapper {
+      flex-direction: column;
+    }
+    
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .header-content {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  /* Accessibility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+</style>
+</head>
+
+<body>
+<div class="header">
+  <div class="header-content">
+    <div class="logo">
+      <span class="logo-icon">🌍</span>
+      <span>AI Carbon Assistant</span>
+    </div>
+    <div class="header-controls">
+      <button class="btn-icon" onclick="clearChat()" aria-label="Clear chat history">
+        🗑️ Clear
+      </button>
+      <button class="btn-icon" onclick="toggleTheme()" aria-label="Toggle theme">
+        🌙 Theme
+      </button>
+      <button class="btn-icon" onclick="exportChat()" aria-label="Export chat">
+        📥 Export
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="chat-container" id="chatContainer" role="log" aria-live="polite"></div>
+
+<div class="input-area">
+  <div class="input-wrapper">
+    <div class="input-group">
+      <label for="questionInput">Ask about carbon footprint:</label>
+      <input 
+        type="text" 
+        id="questionInput" 
+        placeholder="e.g., How much CO2 does my daily commute produce?"
+        aria-label="Your question"
+        onkeypress="handleKeyPress(event)"
+        autocomplete="off"
+      >
+    </div>
+    <button onclick="askQuestion()" id="submitBtn" aria-label="Submit question">
+      <span>🚀</span>
+      <span>Ask AI</span>
+    </button>
+  </div>
+  
+  <div class="suggestions">
+    <div class="suggestion-chip" onclick="useSuggestion('I drive 30 km daily. What\'s my carbon footprint?')">
+      🚗 Daily commute
+    </div>
+    <div class="suggestion-chip" onclick="useSuggestion('Compare electric vs petrol car emissions')">
+      ⚡ Car comparison
+    </div>
+    <div class="suggestion-chip" onclick="useSuggestion('How to reduce home energy consumption?')">
+      🏠 Home energy
+    </div>
+    <div class="suggestion-chip" onclick="useSuggestion('Best diet for low carbon footprint')">
+      🥗 Low-carbon diet
+    </div>
+    <div class="suggestion-chip" onclick="useSuggestion('Tips for eco-friendly travel')">
+      ✈️ Green travel
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  🌱 Powered by AI | Real-time carbon calculations | Join the sustainability movement
+</div>
+
+<div id="srAnnouncer" class="sr-only" aria-live="polite"></div>
+
+<script>
+  // DOM Elements
+  const chatContainer = document.getElementById('chatContainer');
+  const questionInput = document.getElementById('questionInput');
+  const submitBtn = document.getElementById('submitBtn');
+  const srAnnouncer = document.getElementById('srAnnouncer');
+  
+  // State
+  let isProcessing = false;
+  
+  // Load saved theme
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'light') {
+    document.body.classList.add('light-mode');
+  }
+  
+  // Welcome message
+  function addWelcomeMessage() {
+    const welcomeText = `👋 **Welcome to AI Carbon Assistant!**
+
+I'm your personal sustainability guide. Here's what I can help you with:
+
+📊 **Calculate your carbon footprint**
+🌱 **Find eco-friendly alternatives**
+💡 **Get personalized sustainability tips**
+📚 **Learn about environmental impact**
+
+**Try asking me:**
+• "What's the carbon footprint of a 10km car ride?"
+• "How can I reduce my plastic waste?"
+• "Compare biking vs driving emissions"
+• "Best ways to save energy at home"
+
+Let's work together for a greener planet! 🌍`;
+    
+    addMessage(welcomeText, 'bot');
+  }
+  
+  function addMessage(text, type) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
+    messageDiv.setAttribute('role', 'article');
+    
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    if (type === 'bot') {
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'copy-btn';
+      copyBtn.textContent = '📋 Copy';
+      copyBtn.onclick = () => copyToClipboard(text);
+      messageDiv.appendChild(copyBtn);
+      
+      const content = document.createElement('div');
+      content.innerHTML = formatMessage(text);
+      messageDiv.appendChild(content);
+      
+      const timeSpan = document.createElement('div');
+      timeSpan.style.fontSize = '10px';
+      timeSpan.style.opacity = '0.6';
+      timeSpan.style.marginTop = '8px';
+      timeSpan.textContent = timestamp;
+      messageDiv.appendChild(timeSpan);
+    } else {
+      const content = document.createElement('div');
+      content.textContent = text;
+      messageDiv.appendChild(content);
+      
+      const timeSpan = document.createElement('div');
+      timeSpan.style.fontSize = '10px';
+      timeSpan.style.opacity = '0.6';
+      timeSpan.style.marginTop = '8px';
+      timeSpan.style.textAlign = 'right';
+      timeSpan.textContent = timestamp;
+      messageDiv.appendChild(timeSpan);
+    }
+    
+    chatContainer.appendChild(messageDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+  
+  function formatMessage(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/• /g, '&nbsp;&nbsp;• ')
+      .replace(/\n/g, '<br>');
+  }
+  
+  function showTypingIndicator() {
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot';
+    typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = `
+      <div class="typing-indicator">
+        <span>🤖</span>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    `;
+    chatContainer.appendChild(typingDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+  
+  function hideTypingIndicator() {
+    const indicator = document.getElementById('typingIndicator');
+    if (indicator) indicator.remove();
+  }
+  
+  function showToast(message, isError = false) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.style.background = isError ? '#ef4444' : '#22c55e';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+  
+  function announceToScreenReader(message) {
+    srAnnouncer.textContent = message;
+    setTimeout(() => srAnnouncer.textContent = '', 3000);
+  }
+  
+  async function copyToClipboard(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast('✅ Copied to clipboard!');
+      announceToScreenReader('Copied to clipboard');
+    } catch (err) {
+      showToast('❌ Failed to copy', true);
+    }
+  }
+  
+  function handleKeyPress(event) {
+    if (event.key === 'Enter' && !isProcessing) {
+      askQuestion();
+    }
+  }
+  
+  function useSuggestion(suggestion) {
+    questionInput.value = suggestion;
+    questionInput.focus();
+    announceToScreenReader(`Suggestion selected: ${suggestion}`);
+  }
+  
+  async function askQuestion() {
+    const question = questionInput.value.trim();
+    
+    if (!question) {
+      showToast('⚠️ Please enter a question', true);
+      return;
+    }
+    
+    if (question.length > 500) {
+      showToast('⚠️ Question too long (max 500 characters)', true);
+      return;
+    }
+    
+    if (isProcessing) {
+      showToast('⏳ Please wait, processing your request...', true);
+      return;
+    }
+    
+    addMessage(question, 'user');
+    questionInput.value = '';
+    isProcessing = true;
+    submitBtn.disabled = true;
+    showTypingIndicator();
+    
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      
+      const response = await fetch('/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ q: question }),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      hideTypingIndicator();
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Server error');
+      }
+      
+      const data = await response.text();
+      addMessage(data, 'bot');
+      announceToScreenReader('Response received');
+      showToast('✅ Response received!');
+      
+    } catch (error) {
+      hideTypingIndicator();
+      console.error('Error:', error);
+      
+      let errorMessage = 'Network error. Please try again.';
+      if (error.name === 'AbortError') {
+        errorMessage = 'Request timeout. Please try again.';
+      }
+      
+      addMessage(`⚠️ ${errorMessage}`, 'bot');
+      showToast(errorMessage, true);
+      announceToScreenReader(`Error: ${errorMessage}`);
+    } finally {
+      isProcessing = false;
+      submitBtn.disabled = false;
+      questionInput.focus();
+    }
+  }
+  
+  function clearChat() {
+    if (confirm('🗑️ Delete all messages?\n\nThis action cannot be undone.')) {
+      chatContainer.innerHTML = '';
+      addWelcomeMessage();
+      showToast('🗑️ Chat cleared!');
+      announceToScreenReader('Chat cleared');
+    }
+  }
+  
+  function exportChat() {
+    const messages = Array.from(chatContainer.querySelectorAll('.message'));
+    if (messages.length === 0) {
+      showToast('⚠️ No messages to export', true);
+      return;
+    }
+    
+    const exportText = messages.map(msg => {
+      const type = msg.classList.contains('user') ? 'You' : 'AI';
+      const text = msg.querySelector('div')?.textContent || '';
+      return `[${type}]: ${text}`;
+    }).join('\n\n');
+    
+    const blob = new Blob([`🌍 AI Carbon Assistant Chat Export\n📅 ${new Date().toLocaleString()}\n\n${exportText}`], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `carbon-chat-${Date.now()}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('📥 Chat exported!');
+    announceToScreenReader('Chat exported');
+  }
+  
+  function toggleTheme() {
+    document.body.classList.toggle('light-mode');
+    const isLight = document.body.classList.contains('light-mode');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    showToast(isLight ? '☀️ Light mode enabled' : '🌙 Dark mode enabled');
+    announceToScreenReader(isLight ? 'Light mode enabled' : 'Dark mode enabled');
+  }
+  
+  // Initialize
+  addWelcomeMessage();
+  questionInput.focus();
+</script>
 </body>
 </html>

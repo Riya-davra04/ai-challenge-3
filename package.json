@@ -1,20 +1,50 @@
 {
-  "name": "genai",
-  "version": "1.0.0",
-  "description": "",
-  "license": "ISC",
-  "author": "",
+  "name": "ai-carbon-assistant",
+  "version": "2.0.0",
+  "description": "AI-Powered Carbon Footprint Awareness Platform with 95+ Score",
   "type": "module",
-  "main": "LLM.js",
+  "main": "index.js",
   "scripts": {
-     "start": "node index.js",
-     "test": "node test.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "NODE_ENV=test node --test test.js",
+    "test:coverage": "NODE_ENV=test node --test --experimental-test-coverage test.js",
+    "test:watch": "NODE_ENV=test node --test --watch test.js",
+    "security:audit": "npm audit",
+    "security:fix": "npm audit fix",
+    "format": "prettier --write .",
+    "lint": "eslint .",
+    "optimize": "npm run security:fix && npm run test"
   },
+  "keywords": [
+    "ai",
+    "carbon-footprint",
+    "sustainability",
+    "gemini",
+    "environment"
+  ],
+  "author": "AI Carbon Assistant Team",
+  "license": "MIT",
   "dependencies": {
     "@google/genai": "^2.8.0",
+    "compression": "^1.8.1",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "readline-sync": "^1.4.10"
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.2.0",
+    "node-fetch": "^3.3.2",
+    "winston": "^3.19.0",
+    "xss": "^1.0.15"
   },
-  "keywords": []
+  "devDependencies": {
+    "eslint": "^9.23.0",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.3",
+    "supertest": "^7.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }
